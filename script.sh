@@ -14,7 +14,7 @@ for mediaFile in `ls $ASSETSFOLDER | grep .mp4`; do
     # AQUIVOS DE RESOLUCOES DIFERENTES NA PASTA
     OUTPUT=$ASSETSFOLDER/$FILENAME/$FILENAME
     DURATION=$(ffprobe -i $INPUT -show_format -v quiet | sed -n 's/duration=//p')
-    echo $DURATION
+    # echo $DURATION
 
     OUTPUT144=$OUTPUT-$DURATION-144
     OUTPUT360=$OUTPUT-$DURATION-360
@@ -28,7 +28,7 @@ for mediaFile in `ls $ASSETSFOLDER | grep .mp4`; do
         -movflags frag_keyframe+empty_moov+default_base_moof \
         -b:v 300k \
         -maxrate 300k \
-        -buffersize  300k \
+        -bufsize  300k \
         -vf "scale=-256:144" \ 
         # -v quiet \
         $OUTPUT144.mp4
@@ -41,12 +41,12 @@ for mediaFile in `ls $ASSETSFOLDER | grep .mp4`; do
         -movflags frag_keyframe+empty_moov+default_base_moof \
         -b:v 400k \
         -maxrate 400k \
-        -buffersize 400k \
+        -bufsize 400k \
         -vf "scale=-1:360" \ 
         # -v quiet \
         $OUTPUT360.mp4
 
-    echo "RENDERING IN 720P"
+    # echo "RENDERING IN 720P"
     ffmpeg -y -i $INPUT \
         -c:a aac -ac 2 \
         -vcodec h264 -acodec aac \
@@ -54,9 +54,8 @@ for mediaFile in `ls $ASSETSFOLDER | grep .mp4`; do
         -movflags frag_keyframe+empty_moov+default_base_moof \
         -b:v 150k \
         -maxrate 150k \
-        -buffersize 1000k \
+        -bufsize 1000k \
         -vf "scale=-1:720" \ 
-        # -v quiet \
         $OUTPUT720.mp4
-
+        # -v quiet \
 done
